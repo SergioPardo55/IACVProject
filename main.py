@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 from CourtTracker import courtTracker as cT
 import matplotlib.pyplot as plt
+import pandas as pd
 
 def read_video(path_video):
     """ Read video file    
@@ -43,7 +44,7 @@ def applyColorFilter(frame: np.ndarray)->np.ndarray:
     hsv = cv2.cvtColor(result, cv2.COLOR_BGR2HSV)
     
     # define range of red color in HSV
-    lower_red = np.array([0,100,100])
+    lower_red = np.array([0,200,200])
     upper_red = np.array([20,255,255])
      
     # Threshold the HSV image using inRange function to get only red colors
@@ -52,32 +53,28 @@ def applyColorFilter(frame: np.ndarray)->np.ndarray:
     # Bitwise-AND mask and original image 
     result = cv2.bitwise_and(result, result, mask=mask)
 
-    return result
+    return mask
 
 def findCircles(img: np.ndarray)->np.ndarray:
-    img = cv2.medianBlur(img,5) 
+    # img = cv2.medianBlur(img,5) 
+    # cv2.imshow("detected circles", img)
+    # cv2.waitKey(0)
+
     cimg = cv2.cvtColor(img,cv2.COLOR_GRAY2BGR)
 
     minDist = 60
     # higher threshold of Canny Edge detector, lower threshold is twice smaller
-    p1UpperThreshold = 200
+    p1UpperThreshold = 1000
     # the smaller it is, the more false circles may be detected
-    p2AccumulatorThreshold = 20
+    p2AccumulatorThreshold = 5
     mR = 0
     mRa = 0
 
     # use gray image, not edge detected
     circles = cv2.HoughCircles(img,cv2.HOUGH_GRADIENT,1,minDist,
                                 param1= p1UpperThreshold,param2=p2AccumulatorThreshold,minRadius=mR,maxRadius=mRa)
-    print(circles)
     circles = np.uint16(np.around(circles))
     return circles
-    for i in circles[0,:]:
-        # draw the outer circle
-        cv2.circle(cimg,(i[0],i[1]),i[2],(0,255,0),2)
-        # draw the center of the circle
-        cv2.circle(cimg,(i[0],i[1]),2,(0,0,255),3)
-        cv2.imshow('detected circles',cimg)
 
 def getDeltaPosition(f1: np.ndarray, f2: np.ndarray)->np.ndarray:
     """ Get delta position between two frames
@@ -87,18 +84,20 @@ def getDeltaPosition(f1: np.ndarray, f2: np.ndarray)->np.ndarray:
     :return
         delta: delta position between f1 and f2
     """
-    #Convert to gray scale
-    f1 = cv2.cvtColor(f1, cv2.COLOR_BGR2GRAY)
-    f2 = cv2.cvtColor(f2, cv2.COLOR_BGR2GRAY)
-
     #Find coordinate of the tennis ball in each frame
     circles1 = findCircles(f1)
-    print(circles1)
     circles2 = findCircles(f2)
 
+    x1 = circles1[0][0][0]
+    y1 = circles1[0][0][1]
+    x2 = circles2[0][0][0]
+    y2 = circles2[0][0][1]
+
+    dx = x2-x1
+    dy = y2-y1
 
     #Find the difference in position of the tennis ball
-    delta = circles2 - circles1
+    delta = dy/dx
 
     return delta
 
@@ -112,7 +111,10 @@ if __name__ == '__main__':
         f1 = applyColorFilter(frame1)
         f2 = applyColorFilter(frame2)
         m = getDeltaPosition(f1, f2)
-        
+        t = 1/fps
+        v = i*t
+
+        i+=1
     #     cv2.imshow('frame', f1)
     #     if cv2.waitKey(1) & 0xFF == ord('q'):
     #         break
