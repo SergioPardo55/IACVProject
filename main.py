@@ -147,22 +147,46 @@ if __name__ == '__main__':
     posx = []
     posy = []
     i=0
+    lastPosx = 0
+    lastPosy = 0
+    deltax = 1
+    deltay = 1
+    north = False
     while i<len(frames)-1:
         frame1 = frames[i]
         f1 = applyColorFilter(frame1)
         circ_f1 = getCircPos(f1)
+        #Calculate the time of the frame
+        t = 1/fps
+        v = i*t
+        times.append(v)
         if circ_f1 is not None:
-            #Calculate the time of the frame
-            t = 1/fps
-            v = i*t
-            times.append(v)
+            if lastPosy < circ_f1[1]:
+                north = True
             posx.append(circ_f1[0])
+            if not (circ_f1[0] ==lastPosx):
+                deltax = abs(circ_f1[0] - lastPosx)
+            lastPosx = circ_f1[0]
             posy.append(circ_f1[1])
+            if not (circ_f1[1] ==lastPosy):
+                deltay = abs(circ_f1[1] - lastPosy)
+            lastPosy = circ_f1[1]
+        else:
+            if north:
+                lastPosx -= deltax
+                lastPosy -= deltay
+                posx.append(lastPosx)
+                posy.append(lastPosy)
+            else:
+                lastPosx += deltax
+                lastPosy += deltay
+                posx.append(lastPosx)
+                posy.append(lastPosy)
         i+=1
 
     # Find local maxima
     data = np.array(posy)
-    radius = 3 # number of elements to the left and right to compare to
+    radius = 4 # number of elements to the left and right to compare to
     mins = argrelextrema(data, np.less, order=radius)[0]
     maxs = argrelextrema(data, np.greater, order=radius)[0]
 
