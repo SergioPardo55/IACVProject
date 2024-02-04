@@ -144,58 +144,49 @@ if __name__ == '__main__':
     file_path = './tennis2.mp4'
     frames, fps = read_video(file_path)
     times = []
-    posx = []
-    posy = []
+    n_frame = []
+    posx = {}
+    posy = {}
     i=0
-    lastPosx = 0
-    lastPosy = 0
-    deltax = 1
-    deltay = 1
-    north = False
     while i<len(frames)-1:
         frame1 = frames[i]
         f1 = applyColorFilter(frame1)
         circ_f1 = getCircPos(f1)
-        #Calculate the time of the frame
-        t = 1/fps
-        v = i*t
-        times.append(v)
         if circ_f1 is not None:
-            if lastPosy < circ_f1[1]:
-                north = True
-            posx.append(circ_f1[0])
-            if not (circ_f1[0] ==lastPosx):
-                deltax = abs(circ_f1[0] - lastPosx)
-            lastPosx = circ_f1[0]
-            posy.append(circ_f1[1])
-            if not (circ_f1[1] ==lastPosy):
-                deltay = abs(circ_f1[1] - lastPosy)
-            lastPosy = circ_f1[1]
-        else:
-            if north:
-                lastPosx -= deltax
-                lastPosy -= deltay
-                posx.append(lastPosx)
-                posy.append(lastPosy)
-            else:
-                lastPosx += deltax
-                lastPosy += deltay
-                posx.append(lastPosx)
-                posy.append(lastPosy)
+            #Calculate the time of the frame
+            t = 1/fps
+            v = i*t
+            times.append(v)
+            n_frame.append(i)
+            posx[i] = (circ_f1[0])
+            posy[i] = (circ_f1[1])
+        i+=1
+
+    # Create a mapping of the keys
+    i=0
+    mappingKeys = {}
+    ykeys = list(posy.keys())
+    while i<len(ykeys):    
+        mappingKeys[i] = ykeys[i]
         i+=1
 
     # Find local maxima
-    data = np.array(posy)
-    radius = 4 # number of elements to the left and right to compare to
+    data = np.array(list(posy.values()))
+    radius = 2 # number of elements to the left and right to compare to
     mins = argrelextrema(data, np.less, order=radius)[0]
     maxs = argrelextrema(data, np.greater, order=radius)[0]
 
     # Join the arrays
-    crits = np.concatenate((mins, maxs))
+    crits = []
+    for m in mins:
+        crits.append(mappingKeys[m])
+    for m in maxs:
+        crits.append(mappingKeys[m])
 
     # Transform slope and time to a DataFrame
-    data = {'Time': times, 'X': posx, 'Y': posy}
+    data = {'Time': times, 'X': list(posx.values()), 'Y': list(posy.values()), 'Frame': n_frame}
     df = pd.DataFrame(data)
+    df.set_index('Frame', inplace=True)
     df = df.dropna()
     #compute data for plotting
     x = df['Time']
@@ -204,7 +195,7 @@ if __name__ == '__main__':
     #plot the chart
     fig, ax = plt.subplots()
     bar_plot = ax.plot(x, y)
-    
+
     #plot the critical points
     bar_plot = ax.plot(x[crits], y[crits], 'ro')
 
@@ -214,11 +205,11 @@ if __name__ == '__main__':
     #set y-axis label
     ax.set_ylabel('Height of the ball on the screen')
     plt.show()
-    
-    print(crits)
     # For each point in the critical points, write the frame to a file
     for i in crits:
-        frame = cv2.circle(frames[i], (posx[i],posy[i]), radius=0, color=(23, 252, 3), thickness=12)
+        xpos = posx[i]
+        ypos = posy[i]
+        frame = cv2.circle(frames[i], (xpos,ypos), radius=0, color=(23, 252, 3), thickness=12)
         frames[i] = frame
 
     write_video(frames, 'output.mp4', fps)    
