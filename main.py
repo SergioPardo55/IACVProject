@@ -177,7 +177,7 @@ def write_video(frames, path_output_video, fps):
     out.release()
 
 if __name__ == '__main__':
-    file_path = './tennis_5_tracked.mp4'
+    file_path = './tennis_1_tracked.mp4'
     frames, fps = read_video(file_path)
     times = []
     n_frame = []
@@ -263,10 +263,10 @@ if __name__ == '__main__':
     bounce_player_1 = [value for value in critics_3 if y[value] <= 0.5]
     bounce_player_1 = remove_close_numbers(bounce_player_1, y, 0.2, invert = 0)
 
-    #Critical points for player 2, same logic as player 1
+    #Find the critical points for player 2. All the points that are above 0.5 mean
     player_2_critics_aux = [value for value in crits_2 if  y[value] >= 0.5]
 
-    #Find the critic points for player 2. All the points that are above 0.5 mean
+
     player_2_critics = []
     for element in player_2_critics_aux:
         #Take the max index of the frame of the neighborhood that corresponds to the hit of the ball
@@ -298,7 +298,7 @@ if __name__ == '__main__':
     #Detect the bounces on player 2 side of the court
     crits_bounce_player_2 = min_max_finder(data_original, 3) #should be 5
     crits_bounce_player_2_original = crits_bounce_player_2
-    crits_bounce_player_2 = [value for value in crits if y[value] >= 0.75]
+    crits_bounce_player_2 = [value for value in crits if (y[value] >= 0.75 and value not in player_2_critics)]
     crits_bounce_player_2 = remove_close_numbers(crits_bounce_player_2, y, 0.1, 0)
 
     ### Plotting ###
@@ -358,11 +358,11 @@ if __name__ == '__main__':
             if item != last:
                 if item in player_1_critics:
                     f.write("Player 1 hits the ball at %s seconds\n" % str(item*1/fps))
-                elif item in player_2_critics:
+                if item in player_2_critics:
                     f.write("Player 2 hits the ball at %s seconds\n" % str(item*1/fps))
-                elif item in crits_bounce_player_2:
-                    f.write("Player 2 bounces the ball at %s seconds\n" % str(item*1/fps))
-                elif item in bounce_player_1:
-                    f.write("Player 1 bounces the ball at %s seconds\n" % str(item*1/fps))
+                if item in crits_bounce_player_2:
+                    f.write("The ball bounces in player's 2 field at %s seconds\n" % str(item*1/fps))
+                if item in bounce_player_1:
+                    f.write("The ball bounces in player's 1 field at %s seconds\n" % str(item*1/fps))
     f.close()
     write_video(frames, 'tennisXOutput.mp4', fps)
