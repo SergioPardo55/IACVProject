@@ -316,12 +316,15 @@ if __name__ == '__main__':
     plt.tight_layout()
     plt.savefig('yPosition.png')
     
-# Drawing the player_1 bounce
+    #Store all critical points in a list
+    all_crits = []
+    # Drawing the player_1 bounce 
     for i in crits_bounce_player_2:
             xpos = posx[i]
             ypos = posy[i]
             frame = cv2.circle(frames[i], (xpos,ypos), radius=0, color=(236,30,250), thickness=15)
             frames[i] = frame
+            all_crits.append(i)
 
 # Drawing the player_1 bounce
     for i in bounce_player_1:
@@ -329,6 +332,7 @@ if __name__ == '__main__':
             ypos = posy[i]
             frame = cv2.circle(frames[i], (xpos,ypos), radius=0, color=(236,30,250), thickness=15)
             frames[i] = frame
+            all_crits.append(i)
 
 # Drawing the player_1_critics
     for i in player_1_critics:
@@ -336,6 +340,7 @@ if __name__ == '__main__':
             ypos = posy[i]
             frame = cv2.circle(frames[i], (xpos,ypos), radius=0, color=(0, 255, 0), thickness=15)
             frames[i] = frame
+            all_crits.append(i)
 
 # Drawing the player_2_critics
     for i in player_2_critics:
@@ -343,6 +348,21 @@ if __name__ == '__main__':
             ypos = posy[i]
             frame = cv2.circle(frames[i], (xpos,ypos), radius=0, color=(0, 255, 255), thickness=15)
             frames[i] = frame
+            all_crits.append(i)
     
-
+    all_crits = np.sort(all_crits)
+    # Write a text file with the critical points
+    with open('critical_points.txt', 'w') as f:
+        last = -1
+        for item in all_crits:
+            if item != last:
+                if item in player_1_critics:
+                    f.write("Player 1 hits the ball at %s seconds\n" % str(item*1/fps))
+                elif item in player_2_critics:
+                    f.write("Player 2 hits the ball at %s seconds\n" % str(item*1/fps))
+                elif item in crits_bounce_player_2:
+                    f.write("Player 2 bounces the ball at %s seconds\n" % str(item*1/fps))
+                elif item in bounce_player_1:
+                    f.write("Player 1 bounces the ball at %s seconds\n" % str(item*1/fps))
+    f.close()
     write_video(frames, 'tennisXOutput.mp4', fps)
