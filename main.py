@@ -8,6 +8,9 @@ from scipy.signal import butter, lfilter, freqz, filtfilt, find_peaks, argrelext
 
 
 def remove_close_numbers(lst, y, rate, invert):
+    '''
+    Remove close numbers in the graph to avoid multiple peaks, e.g. multiple 'detected bounces or hits'
+    '''
     np.argsort(lst)
     if invert:
         lst.reverse()
@@ -26,6 +29,9 @@ def remove_close_numbers(lst, y, rate, invert):
 
 
 def butter_lowpass(cutoff, fs, order=5):
+    '''
+    Create a butterworth filter
+    '''
     nyq = 0.5 * fs
     normal_cutoff = cutoff / nyq
     b, a = butter(order, normal_cutoff, btype="low", analog=False)
@@ -33,15 +39,20 @@ def butter_lowpass(cutoff, fs, order=5):
 
 
 def butter_lowpass_filter(data, cutoff, fs, order=5):
+    '''
+    Filter the signal using a butterworth filter
+    '''
     b, a = butter_lowpass(cutoff, fs, order=order)
     y = filtfilt(b, a, data)
     return y
 
 
 def min_max_finder(data, radius = 1):
+    '''
+    Finds the local minima and maxima of a signal (critical points)
+    '''
     mins = argrelextrema(data, np.less, order=radius)[0]
     maxs = argrelextrema(data, np.greater, order=radius)[0]
-
 
     # Join the arrays
     crits = []
@@ -50,15 +61,7 @@ def min_max_finder(data, radius = 1):
     for m in maxs:
         crits.append(mappingKeys[m])
 
-    # Transform slope and time to a DataFrame
-    data = {'Time': times, 'X': list(posx.values()), 'Y': list(posy.values()), 'Frame': n_frame}
-    df = pd.DataFrame(data)
-    df.set_index('Frame', inplace=True)
-    df = df.dropna()
-    #compute data for plotting
-    x = df['Time']
     crits = np.sort(crits)
-    y = df['Y']
     return crits
   
 
@@ -117,6 +120,9 @@ def applyColorFilter(frame: np.ndarray)->np.ndarray:
     return def_mask
 
 def findCircles(img: np.ndarray)->np.ndarray:
+    '''
+    Find circles in the image through HoughCircles algorithm
+    '''
     minDist = 60
     # higher threshold of Canny Edge detector, lower threshold is twice smaller
     p1UpperThreshold = 1000
@@ -138,37 +144,12 @@ def findCircles(img: np.ndarray)->np.ndarray:
             cv2.circle(img, center, radius, (255, 0, 255), 3)
     return circles
 
-def getDeltaPosition(f1: np.ndarray, f2: np.ndarray)->np.ndarray:
-    """ Get delta position between two frames
-    :params
-        f1: first frame
-        f2: second frame
-    :return
-        delta: delta position between f1 and f2
-    """
-    #Find coordinate of the tennis ball in each frame
-    circles1 = findCircles(f1)
-    circles2 = findCircles(f2)
-
-    x1 = circles1[0][0][0]
-    y1 = circles1[0][0][1]
-    x2 = circles2[0][0][0]
-    y2 = circles2[0][0][1]
-
-    dx = x2-x1
-    dy = y2-y1
-
-    #Find the difference in position of the tennis ball
-    delta = dy/dx
-
-    return delta
-
 def getCircPos(f1: np.ndarray)->np.ndarray:
-    """ Get delta position between two frames
+    """ Calls findCircles and returns the position of the ball
     :params
         f1: first frame
     :return
-        delta: delta position between f1 and f2
+        (x1, y1): position of the ball in the frame
     """
     #Find coordinate of the tennis ball in each frame
     circles1 = findCircles(f1)
@@ -196,7 +177,7 @@ def write_video(frames, path_output_video, fps):
     out.release()
 
 if __name__ == '__main__':
-    file_path = './tennis_1_output.mp4'
+    file_path = './tennis_5_tracked.mp4'
     frames, fps = read_video(file_path)
     times = []
     n_frame = []
@@ -225,20 +206,6 @@ if __name__ == '__main__':
         mappingKeys[i] = ykeys[i]
         i+=1
 
-    # Find local maxima
-    data = np.array(list(posy.values()))
-    data_original = data
-    radius = 1 # number of elements to the left and right to compare to 1 is the best
-    mins = argrelextrema(data, np.less, order=radius)[0]
-    maxs = argrelextrema(data, np.greater, order=radius)[0]
-
-    # Join the arrays
-    crits = []
-    for m in mins:
-        crits.append(mappingKeys[m])
-    for m in maxs:
-        crits.append(mappingKeys[m])
-
     # Transform slope and time to a DataFrame
     data = {'Time': times, 'X': list(posx.values()), 'Y': list(posy.values()), 'Frame': n_frame}
     df = pd.DataFrame(data)
@@ -248,19 +215,16 @@ if __name__ == '__main__':
     x = df['Time']
     y = df['Y']
 
+    data = np.array(list(posy.values()))
+    data_original = data
+    radius = 1 # number of elements to the left and right to compare to 1 is the best
 
-
-
-    ### Proccesing ####
-
-    crits =  min_max_finder(data_original)
-    crits_process = remove_close_numbers(crits, y, 0.4, 0)
+    ### Proccesing ####    
 
     #Normalize
     y = y/np.max(y)
 
-    # Kernel size
-    window_size = 2 # 2 is normal
+    # Kernel size for mean filter
     window_size = 3 # 2 is normal
 
     # Mean filter kernel
@@ -280,34 +244,32 @@ if __name__ == '__main__':
     signal = y
     signal = butter_lowpass_filter(signal, cutoff, fs, order)
 
-    # FFT of the signal
-    # fft_result = np.fft.fft(signal)
-    # fft_freq = np.fft.fftfreq(len(fft_result), 1/fs)
+     ## analysis of critic points ##
 
-
+    # Find critical points with original signal
+    crits = min_max_finder(data, radius)
+    crits_process = remove_close_numbers(crits, y, 0.4, 0)
     
-    bounce_player_1 = [value for value in critics_3 if y[value] <= 0.5]
-    bounce_player_1 = remove_close_numbers(bounce_player_1, y, 0.2, invert = 0)
-
-
+    # Find critical points with only values present
     crits_2 = min_max_finder(signal)
     crits_2 = [value for value in crits_2 if value <= len(signal)]
 
-
-     ## analysis of critic points ##
-
-    #Player 1 is gonna be the upper one
+    # Find the critic points for player 1. All the points that are below 0.5 mean 
+    # that the ball is in the upper part of the court
     player_1_critics =  [value for value in crits_2 if  y[value] <= 0.5]
     player_1_critics = remove_close_numbers(player_1_critics, y, 0.8, invert = 0)
 
-    #Player 2
-    player_2_critics_aux = [value for value in crits_2 if  y[value] >= 0.5]
-    #print('value,  y[value] ', (player_2_critics_aux,  y[player_2_critics_aux] ))
-    #print('player_2_critics_aux', player_2_critics_aux)
+    # Variable to find the bounce in the court of player 1
+    bounce_player_1 = [value for value in critics_3 if y[value] <= 0.5]
+    bounce_player_1 = remove_close_numbers(bounce_player_1, y, 0.2, invert = 0)
 
+    #Critical points for player 2, same logic as player 1
+    player_2_critics_aux = [value for value in crits_2 if  y[value] >= 0.5]
+
+    #Find the critic points for player 2. All the points that are above 0.5 mean
     player_2_critics = []
     for element in player_2_critics_aux:
-        #print('element', element)
+        #Take the max index of the frame of the neighborhood that corresponds to the hit of the ball
         player_2_critics_aux_2 = [value for value in crits if abs(value - element) < 7]
         if  len(player_2_critics_aux_2) == 0:
             player_2_critics_aux_2 = [value for value in critics_3 if abs(value - element) < 7]
@@ -316,15 +278,14 @@ if __name__ == '__main__':
             player_2_critics_aux_2 = [np.max(player_2_critics_aux_2)]
         player_2_critics.append(player_2_critics_aux_2[0])
 
-
-
-
-
     #Bounce_player_1
     bounce_player_1_aux = []
     for element in player_1_critics:
+        #Preserve the bounces of the ball that happen in player 1 side of the court
         bounce_player_1 = [value for value in bounce_player_1 if abs(value - element) > 7]
     
+    #If the bounce is not in the bounce_player_1 list, then we look for it in the bounces
+    #  right after the hit of player 2 in crits_process
     for element in player_2_critics:
         bouncer_1 = [value for value in bounce_player_1 if value > element]
         bouncer_1_original = [value for value in crits_process if value > element]
@@ -334,84 +295,27 @@ if __name__ == '__main__':
                     bounce_player_1.append(bouncer_1_original[0])
                     bounce_player_1.sort()
 
-
-    #Bounce_player_2
+    #Detect the bounces on player 2 side of the court
     crits_bounce_player_2 = min_max_finder(data_original, 3) #should be 5
     crits_bounce_player_2_original = crits_bounce_player_2
     crits_bounce_player_2 = [value for value in crits if y[value] >= 0.75]
     crits_bounce_player_2 = remove_close_numbers(crits_bounce_player_2, y, 0.1, 0)
 
-    peaks, _ = find_peaks(y, distance=2)  # 'distance' define distance between peaks
-    peaks = [value for value in peaks if value <= len(x)]
-    peaks = np.array(peaks)
-    peaks = [value for value in peaks if value  in x.keys()]
+    ### Plotting ###
 
-    #print(peaks)
-    #print(len(x), len(y))
-    #print('x keys', x.keys())
-    #print(353 in x.keys())
-
-
-
-
-
-
-
-    #Graph the signal and its frequency spectrum
-    plt.figure(figsize=(12, 6))
-    plt.subplot(3, 1, 1)
     plt.plot(x, y)
-    plt.plot(x[crits], y[crits], 'ro')
-    plt.title('Signal through time')
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
-
-    #print(type(crits))
-    #print(type(peaks))
-   
-    plt.subplot(3, 1, 1)
-    # plt.plot(x, signal)
-    # #print(len(crits_2))
-    # #print('critics', crits_2)
-    plt.plot(x, signal)
-    plt.plot(x[player_2_critics], y[player_2_critics], 'yo')
-    plt.plot(x[player_1_critics], y[player_1_critics], 'o', color='green', markersize = 6)
-    plt.plot(x[crits_process], y[crits_process], 'o', color='yellow', markersize = 4)
-
-    plt.plot(x[crits_2], y[crits_2], 'bo')
-
-    # plt.ylim(100, 650)
-    plt.title('Filtered signal through time')
-    plt.xlabel('Tiempo (s)')
-    plt.ylabel('Amplitude')
-
-    plt.subplot(3, 1, 2)
-    plt.plot(x, y)
-    plt.plot(x[crits_bounce_player_2], y[crits_bounce_player_2], 'o', color='violet', markersize = 4)
-    plt.plot(x[bounce_player_1], y[bounce_player_1], 'o', color = 'red')
-    plt.plot(x[player_1_critics], y[player_1_critics], 'o',color= 'blue', markersize= 4)
-    plt.plot(x[player_2_critics], y[player_2_critics], 'o', color='green', markersize = 6)
-    plt.title('Frequency spectrum')
-    plt.xlabel('Frequency (Hz)')
-    plt.ylabel('Spectrum Amplitude')
-    plt.savefig('frequency.png')
-
-    plt.subplot(3, 1, 3)
-    plt.plot(x, y)
-    plt.plot(x[crits], y[crits], 'o', color='green', markersize = 6)
-    plt.plot(x[crits_bounce_player_2_original], y[crits_bounce_player_2_original], 'o', color='blue', markersize = 4)
-    plt.plot(x[peaks], y[peaks], 'o', color='red', markersize = 5)
-    plt.title('Frequency spectrum')
-    plt.xlabel('Frequency (Hz)')
-    plt.ylabel('Spectrum Amplitude')
-
+    plt.plot(x[crits_bounce_player_2], y[crits_bounce_player_2], 'o', color='violet', markersize = 4, label='Player 2 bounce')
+    plt.plot(x[bounce_player_1], y[bounce_player_1], 'o', color = 'red', label='Player 1 bounce')
+    plt.plot(x[player_1_critics], y[player_1_critics], 'o',color= 'blue', markersize= 4, label='Player 1 hits the ball')
+    plt.plot(x[player_2_critics], y[player_2_critics], 'o', color='green', markersize = 6,label='Player 2 hits the ball')
+    plt.title('Y axis position vs time')
+    plt.xlabel('Time [s]')
+    plt.ylabel('Y position')
+    plt.legend()
 
     plt.tight_layout()
-    plt.savefig('frequency.png')
-
-    # plt.show()
-
-
+    plt.savefig('yPosition.png')
+    
 # Drawing the player_1 bounce
     for i in crits_bounce_player_2:
             xpos = posx[i]
@@ -441,4 +345,4 @@ if __name__ == '__main__':
             frames[i] = frame
     
 
-    write_video(frames, 'output.mp4', fps)
+    write_video(frames, 'tennisXOutput.mp4', fps)
