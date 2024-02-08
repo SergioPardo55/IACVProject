@@ -159,6 +159,27 @@ def getCircPos(f1: np.ndarray)->np.ndarray:
     y1 = circles1[0][0][1]
     return (x1, y1)
 
+def computeError(truth: list, detected: list)->float:
+    '''
+    Compute the error between the detected critical points and the ground truth
+    '''
+    error = 0
+    count = 0
+    not_detected = 0
+    i = 0
+    j = 0
+    while i < len(truth):
+        t = truth[i]
+        d = detected[j]
+        if abs(t-d)<5:
+            error += abs((truth[i] - detected[j])/truth[i])
+            count += 1
+            j+=1
+        else:
+            not_detected += 1
+        i+=1
+    error = error/count
+    return error, not_detected
 
 def write_video(frames, path_output_video, fps):
     """ Write .avi file with detected ball tracks
@@ -315,7 +336,7 @@ if __name__ == '__main__':
     plt.legend()
 
     plt.tight_layout()
-    plt.savefig('yPosition.png')
+    plt.savefig('yPosition'+str(vid)+'.png')
     
     #Store all critical points in a list
     all_crits = []
@@ -372,12 +393,14 @@ if __name__ == '__main__':
         frame = frames[i]
         cv2.imwrite('./frames1/frame'+str(i)+'.jpg', frame)
     
-    # Comparing errors
+    ## Computing errors ##
+        
+    # Establish ground truths
     if vid == 1:
-        player_1_crits_truth = [60, 132, 210]
-        player_2_crits_truth = [26, 96, 173]
-        bounce_player_2_truth = [87, 162, 235]
-        bounce_player_1_truth = [49, 121, 200]
+        player_1_crits_truth = [60, 132, 210, 280, 348]
+        player_2_crits_truth = [26, 96, 173, 244, 316]
+        bounce_player_2_truth = [87, 162, 235, 307, 371]
+        bounce_player_1_truth = [49, 121, 200, 271, 338, 382]
     elif vid == 2:
         player_1_crits_truth = []
         player_2_crits_truth = []
@@ -398,5 +421,45 @@ if __name__ == '__main__':
         player_2_crits_truth = []
         bounce_player_2_truth = []
         bounce_player_1_truth = []
-    
-    write_video(frames, 'tennisXOutput.mp4', fps)
+
+    # Write errors and ground truths to a file
+    all_truths = player_1_crits_truth + player_2_crits_truth + bounce_player_2_truth + bounce_player_1_truth
+    all_truths.sort()
+    with open('ground_truths'+str(vid)+'.txt', 'w') as f:
+        last = -1
+        for item in all_truths:
+            if item != last:
+                if item in player_1_crits_truth:
+                    # Write file with 2 items using format()
+                    f.write("Player 1 hits the ball on frame {} or at {} seconds\n".format(str(item), str(item*1/fps)))
+                if item in player_2_crits_truth:
+                    f.write("Player 2 hits the ball on frame {} or at {} seconds\n".format(str(item), str(item*1/fps)))
+                if item in bounce_player_2_truth:
+                    f.write("The ball bounces in player's 2 field on frame {} or at {} seconds\n".format(str(item), str(item*1/fps)))
+                if item in bounce_player_1_truth:
+                    f.write("The ball bounces in player's 1 field on frame {} or at {} seconds\n".format(str(item), str(item*1/fps)))
+
+    # Compute errors
+    error_player_1, not_detected_player_1 = computeError(player_1_crits_truth, player_1_critics)
+    error_player_2, not_detected_player_2 = computeError(player_2_crits_truth, player_2_critics)
+    error_bounce_1, not_detected_bounce_1 = computeError(bounce_player_1_truth, bounce_player_1)
+    error_bounce_2, not_detected_bounce_2 = computeError(bounce_player_2_truth, crits_bounce_player_2)
+    overall_error = (error_player_1 + error_player_2 + error_bounce_1 + error_bounce_2)/4
+    events_not_detected = not_detected_player_1 + not_detected_player_2 + not_detected_bounce_1 + not_detected_bounce_2
+
+    # Write errors to a file
+    with open('errors'+str(vid)+'.txt', 'w') as f:
+        f.write("Error for player's 1 hits: %s\n" % str(error_player_1))
+        f.write("Player's 1 hits not detected: %s\n" % str(not_detected_player_1))
+        f.write("Error for player's 2 hits: %s\n" % str(error_player_2))
+        f.write("Player's 2 hits not detected: %s\n" % str(not_detected_player_2))
+        f.write("Error for bounces in player's 1 side of the court: %s\n" % str(error_bounce_1))
+        f.write("Bounces not detected in player's 1 side: %s\n" % str(not_detected_bounce_1))
+        f.write("Error for bounces in player's 2 side of the court: %s\n" % str(error_bounce_2))
+        f.write("Bounces not detected in player's 2 side: %s\n" % str(not_detected_bounce_2))
+        f.write("Overall error: %s\n" % str(overall_error))
+        f.write("Events not detected: %s\n" % str(events_not_detected))
+    f.close()
+
+
+    write_video(frames, 'tennis_'+str(vid)+'_Output.mp4', fps)
