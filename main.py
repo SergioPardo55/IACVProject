@@ -177,7 +177,8 @@ def write_video(frames, path_output_video, fps):
     out.release()
 
 if __name__ == '__main__':
-    file_path = './tennis_1_tracked.mp4'
+    vid = 1
+    file_path = './tennis_'+str(vid)+'_tracked.mp4'
     frames, fps = read_video(file_path)
     times = []
     n_frame = []
@@ -365,4 +366,37 @@ if __name__ == '__main__':
                 if item in bounce_player_1:
                     f.write("The ball bounces in player's 1 field at %s seconds\n" % str(item*1/fps))
     f.close()
+    
+    # Write a file per each frame of the video and store it in a folder with the name of the video
+    for i in range(len(frames)):
+        frame = frames[i]
+        cv2.imwrite('./frames1/frame'+str(i)+'.jpg', frame)
+    
+    # Comparing errors
+    if vid == 1:
+        player_1_crits_truth = [60, 132, 210]
+        player_2_crits_truth = [26, 96, 173]
+        bounce_player_2_truth = [87, 162, 235]
+        bounce_player_1_truth = [49, 121, 200]
+    elif vid == 2:
+        player_1_crits_truth = []
+        player_2_crits_truth = []
+        bounce_player_2_truth = []
+        bounce_player_1_truth = []
+    elif vid == 3:
+        player_1_crits_truth = []
+        player_2_crits_truth = []
+        bounce_player_2_truth = []
+        bounce_player_1_truth = []
+    elif vid == 4:
+        player_1_crits_truth = []
+        player_2_crits_truth = []
+        bounce_player_2_truth = []
+        bounce_player_1_truth = []
+    elif vid == 5:
+        player_1_crits_truth = []
+        player_2_crits_truth = []
+        bounce_player_2_truth = []
+        bounce_player_1_truth = []
+    
     write_video(frames, 'tennisXOutput.mp4', fps)
