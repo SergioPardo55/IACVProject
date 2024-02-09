@@ -1,0 +1,65 @@
+Player 1 hits the ball at 1.6 seconds
+Player 2 hits the ball at 2.72 seconds
+The ball bounces in player's 1 field at 3.76 seconds
+Player 1 hits the ball at 4.08 seconds
+Player 2 hits the ball at 5.28 seconds
+The ball bounces in player's 1 field at 5.64 seconds
+The ball bounces in player's 1 field at 5.96 seconds
+Player 1 hits the ball at 6.52 seconds
+The ball bounces in player's 2 field at 7.56 seconds
+Player 2 hits the ball at 7.68 seconds
+The ball bounces in player's 1 field at 8.48 seconds
+Player 1 hits the ball at 9.04 seconds
+The ball bounces in player's 2 field at 9.84 seconds
+Player 2 hits the ball at 10.28 seconds
+The ball bounces in player's 1 field at 11.32 seconds
+Player 1 hits the ball at 11.8 seconds
+The ball bounces in player's 2 field at 12.6 seconds
+Player 2 hits the ball at 13.04 seconds
+The ball bounces in player's 1 field at 13.88 seconds
+Player 1 hits the ball at 14.44 seconds
+Player 2 hits the ball at 15.4 seconds
+The ball bounces in player's 1 field at 16.16 seconds
+Player 1 hits the ball at 16.68 seconds
+The ball bounces in player's 2 field at 17.4 seconds
+Player 2 hits the ball at 17.76 seconds
+The ball bounces in player's 1 field at 18.6 seconds
+Player 1 hits the ball at 19.12 seconds
+Player 2 hits the ball at 20.2 seconds
+The ball bounces in player's 1 field at 21.12 seconds
+Player 1 hits the ball at 21.68 seconds
+The ball bounces in player's 2 field at 22.6 seconds
+Player 2 hits the ball at 22.72 seconds
+The ball bounces in player's 1 field at 23.56 seconds
+Player 1 hits the ball at 24.24 seconds
+Player 2 hits the ball at 25.36 seconds
+The ball bounces in player's 1 field at 26.12 seconds
+Player 1 hits the ball at 26.64 seconds
+Player 2 hits the ball at 27.72 seconds
+The ball bounces in player's 1 field at 28.52 seconds
+Player 1 hits the ball at 29.24 seconds
+Player 2 hits the ball at 30.32 seconds
+The ball bounces in player's 1 field at 31.08 seconds
+Player 1 hits the ball at 31.92 seconds
+The ball bounces in player's 2 field at 33.16 seconds
+Player 2 hits the ball at 33.4 seconds
+The ball bounces in player's 1 field at 34.2 seconds
+Player 1 hits the ball at 34.64 seconds
+The ball bounces in player's 2 field at 35.48 seconds
+Player 2 hits the ball at 35.84 seconds
+The ball bounces in player's 1 field at 36.72 seconds
+Player 1 hits the ball at 37.16 seconds
+The ball bounces in player's 2 field at 37.92 seconds
+Player 2 hits the ball at 38.24 seconds
+The ball bounces in player's 1 field at 39.08 seconds
+Player 1 hits the ball at 39.76 seconds
+Player 2 hits the ball at 40.8 seconds
+The ball bounces in player's 1 field at 41.6 seconds
+Player 1 hits the ball at 42.08 seconds
+Player 2 hits the ball at 43.12 seconds
+Player 1 hits the ball at 44.44 seconds
+The ball bounces in player's 2 field at 45.16 seconds
+The ball bounces in player's 2 field at 45.52 seconds
+The ball bounces in player's 1 field at 46.4 seconds
+The ball bounces in player's 1 field at 46.76 seconds
+The ball bounces in player's 2 field at 47.64 seconds
