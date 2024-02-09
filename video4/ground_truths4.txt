@@ -1,0 +1,74 @@
+Player 1 hits the ball on frame 46 or at 1.84 seconds
+The ball bounces in player's 2 field on frame 58 or at 2.32 seconds
+Player 2 hits the ball on frame 69 or at 2.76 seconds
+The ball bounces in player's 1 field on frame 95 or at 3.8 seconds
+Player 1 hits the ball on frame 101 or at 4.04 seconds
+The ball bounces in player's 2 field on frame 122 or at 4.88 seconds
+Player 2 hits the ball on frame 133 or at 5.32 seconds
+The ball bounces in player's 1 field on frame 150 or at 6.0 seconds
+Player 1 hits the ball on frame 163 or at 6.52 seconds
+The ball bounces in player's 2 field on frame 184 or at 7.36 seconds
+Player 2 hits the ball on frame 193 or at 7.72 seconds
+The ball bounces in player's 1 field on frame 213 or at 8.52 seconds
+Player 1 hits the ball on frame 225 or at 9.0 seconds
+The ball bounces in player's 2 field on frame 246 or at 9.84 seconds
+Player 2 hits the ball on frame 258 or at 10.32 seconds
+The ball bounces in player's 1 field on frame 284 or at 11.36 seconds
+Player 1 hits the ball on frame 295 or at 11.8 seconds
+The ball bounces in player's 2 field on frame 313 or at 12.52 seconds
+Player 2 hits the ball on frame 327 or at 13.08 seconds
+The ball bounces in player's 1 field on frame 348 or at 13.92 seconds
+Player 1 hits the ball on frame 356 or at 14.24 seconds
+The ball bounces in player's 2 field on frame 379 or at 15.16 seconds
+Player 2 hits the ball on frame 386 or at 15.44 seconds
+The ball bounces in player's 1 field on frame 405 or at 16.2 seconds
+Player 1 hits the ball on frame 417 or at 16.68 seconds
+The ball bounces in player's 2 field on frame 435 or at 17.4 seconds
+Player 2 hits the ball on frame 445 or at 17.8 seconds
+The ball bounces in player's 1 field on frame 466 or at 18.64 seconds
+Player 1 hits the ball on frame 475 or at 19.0 seconds
+The ball bounces in player's 2 field on frame 497 or at 19.88 seconds
+Player 2 hits the ball on frame 506 or at 20.24 seconds
+The ball bounces in player's 1 field on frame 530 or at 21.2 seconds
+Player 1 hits the ball on frame 539 or at 21.56 seconds
+The ball bounces in player's 2 field on frame 563 or at 22.52 seconds
+Player 2 hits the ball on frame 569 or at 22.76 seconds
+The ball bounces in player's 1 field on frame 595 or at 23.8 seconds
+Player 1 hits the ball on frame 607 or at 24.28 seconds
+The ball bounces in player's 2 field on frame 623 or at 24.92 seconds
+Player 2 hits the ball on frame 635 or at 25.4 seconds
+The ball bounces in player's 1 field on frame 655 or at 26.2 seconds
+Player 1 hits the ball on frame 665 or at 26.6 seconds
+The ball bounces in player's 2 field on frame 684 or at 27.36 seconds
+Player 2 hits the ball on frame 694 or at 27.76 seconds
+The ball bounces in player's 1 field on frame 722 or at 28.88 seconds
+Player 1 hits the ball on frame 729 or at 29.16 seconds
+The ball bounces in player's 2 field on frame 751 or at 30.04 seconds
+Player 2 hits the ball on frame 759 or at 30.36 seconds
+The ball bounces in player's 1 field on frame 781 or at 31.24 seconds
+Player 1 hits the ball on frame 797 or at 31.88 seconds
+The ball bounces in player's 2 field on frame 829 or at 33.16 seconds
+Player 2 hits the ball on frame 837 or at 33.48 seconds
+The ball bounces in player's 1 field on frame 857 or at 34.28 seconds
+Player 1 hits the ball on frame 867 or at 34.68 seconds
+The ball bounces in player's 2 field on frame 887 or at 35.48 seconds
+Player 2 hits the ball on frame 897 or at 35.88 seconds
+The ball bounces in player's 1 field on frame 919 or at 36.76 seconds
+Player 1 hits the ball on frame 927 or at 37.08 seconds
+The ball bounces in player's 2 field on frame 948 or at 37.92 seconds
+Player 2 hits the ball on frame 957 or at 38.28 seconds
+The ball bounces in player's 1 field on frame 979 or at 39.16 seconds
+Player 1 hits the ball on frame 988 or at 39.52 seconds
+The ball bounces in player's 2 field on frame 1013 or at 40.52 seconds
+Player 2 hits the ball on frame 1021 or at 40.84 seconds
+The ball bounces in player's 1 field on frame 1041 or at 41.64 seconds
+Player 1 hits the ball on frame 1051 or at 42.04 seconds
+The ball bounces in player's 2 field on frame 1070 or at 42.8 seconds
+Player 2 hits the ball on frame 1079 or at 43.16 seconds
+The ball bounces in player's 1 field on frame 1102 or at 44.08 seconds
+Player 1 hits the ball on frame 1109 or at 44.36 seconds
+The ball bounces in player's 2 field on frame 1129 or at 45.16 seconds
+Player 2 hits the ball on frame 1138 or at 45.52 seconds
+The ball bounces in player's 1 field on frame 1162 or at 46.48 seconds
+Player 1 hits the ball on frame 1169 or at 46.76 seconds
+The ball bounces in player's 2 field on frame 1191 or at 47.64 seconds

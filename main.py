@@ -159,7 +159,7 @@ def getCircPos(f1: np.ndarray)->np.ndarray:
     y1 = circles1[0][0][1]
     return (x1, y1)
 
-def computeError(truth: list, detected: list)->float:
+def computeError(truth: list, detected: list, max: int)->float:
     '''
     Compute the error between the detected critical points and the ground truth
     '''
@@ -168,17 +168,21 @@ def computeError(truth: list, detected: list)->float:
     not_detected = 0
     i = 0
     j = 0
-    while i < len(truth):
+    while i < len(truth) and j < len(detected):
         t = truth[i]
         d = detected[j]
         if abs(t-d)<5:
-            error += abs((truth[i] - detected[j])/truth[i])
+            normTruth = t/max
+            normDetected = d/max
+            error += abs((normTruth - normDetected)/normTruth)
             count += 1
             j+=1
         else:
             not_detected += 1
         i+=1
-    error = error/count
+    if count == 0:
+        return 0, not_detected
+    error = error/count*100
     return error, not_detected
 
 def write_video(frames, path_output_video, fps):
@@ -198,8 +202,11 @@ def write_video(frames, path_output_video, fps):
     out.release()
 
 if __name__ == '__main__':
-    vid = 1
-    file_path = './tennis_'+str(vid)+'_tracked.mp4'
+
+    ### Change this variable to indicate the name of the video which will be processed ###
+    vid = 5
+
+    file_path = './video'+str(vid)+'/tennis_'+str(vid)+'_tracked.mp4'
     frames, fps = read_video(file_path)
     times = []
     n_frame = []
@@ -336,7 +343,7 @@ if __name__ == '__main__':
     plt.legend()
 
     plt.tight_layout()
-    plt.savefig('yPosition'+str(vid)+'.png')
+    plt.savefig('./video'+str(vid)+'/yPosition'+str(vid)+'.png')
     
     #Store all critical points in a list
     all_crits = []
@@ -374,7 +381,7 @@ if __name__ == '__main__':
     
     all_crits = np.sort(all_crits)
     # Write a text file with the critical points
-    with open('critical_points.txt', 'w') as f:
+    with open('./video'+str(vid)+'/critical_points'+str(vid)+'.txt', 'w') as f:
         last = -1
         for item in all_crits:
             if item != last:
@@ -391,7 +398,7 @@ if __name__ == '__main__':
     # Write a file per each frame of the video and store it in a folder with the name of the video
     for i in range(len(frames)):
         frame = frames[i]
-        cv2.imwrite('./frames1/frame'+str(i)+'.jpg', frame)
+        cv2.imwrite('./frames'+str(vid)+'/frame'+str(i)+'.jpg', frame)
     
     ## Computing errors ##
         
@@ -425,7 +432,8 @@ if __name__ == '__main__':
     # Write errors and ground truths to a file
     all_truths = player_1_crits_truth + player_2_crits_truth + bounce_player_2_truth + bounce_player_1_truth
     all_truths.sort()
-    with open('ground_truths'+str(vid)+'.txt', 'w') as f:
+    max = all_truths[-1]
+    with open('./video'+str(vid)+'/ground_truths'+str(vid)+'.txt', 'w') as f:
         last = -1
         for item in all_truths:
             if item != last:
@@ -438,17 +446,18 @@ if __name__ == '__main__':
                     f.write("The ball bounces in player's 2 field on frame {} or at {} seconds\n".format(str(item), str(item*1/fps)))
                 if item in bounce_player_1_truth:
                     f.write("The ball bounces in player's 1 field on frame {} or at {} seconds\n".format(str(item), str(item*1/fps)))
-
+    
     # Compute errors
-    error_player_1, not_detected_player_1 = computeError(player_1_crits_truth, player_1_critics)
-    error_player_2, not_detected_player_2 = computeError(player_2_crits_truth, player_2_critics)
-    error_bounce_1, not_detected_bounce_1 = computeError(bounce_player_1_truth, bounce_player_1)
-    error_bounce_2, not_detected_bounce_2 = computeError(bounce_player_2_truth, crits_bounce_player_2)
+    error_player_1, not_detected_player_1 = computeError(player_1_crits_truth, player_1_critics, max)
+    error_player_2, not_detected_player_2 = computeError(player_2_crits_truth, player_2_critics, max)
+    error_bounce_1, not_detected_bounce_1 = computeError(bounce_player_1_truth, bounce_player_1, max)
+    error_bounce_2, not_detected_bounce_2 = computeError(bounce_player_2_truth, crits_bounce_player_2, max)
     overall_error = (error_player_1 + error_player_2 + error_bounce_1 + error_bounce_2)/4
     events_not_detected = not_detected_player_1 + not_detected_player_2 + not_detected_bounce_1 + not_detected_bounce_2
 
     # Write errors to a file
-    with open('errors'+str(vid)+'.txt', 'w') as f:
+    with open('./video'+str(vid)+'/errors'+str(vid)+'.txt', 'w') as f:
+        f.write("Errors for video %s\n" % str(vid))
         f.write("Error for player's 1 hits: %s\n" % str(error_player_1))
         f.write("Player's 1 hits not detected: %s\n" % str(not_detected_player_1))
         f.write("Error for player's 2 hits: %s\n" % str(error_player_2))
@@ -457,9 +466,10 @@ if __name__ == '__main__':
         f.write("Bounces not detected in player's 1 side: %s\n" % str(not_detected_bounce_1))
         f.write("Error for bounces in player's 2 side of the court: %s\n" % str(error_bounce_2))
         f.write("Bounces not detected in player's 2 side: %s\n" % str(not_detected_bounce_2))
-        f.write("Overall error: %s\n" % str(overall_error))
+        f.write("Averaged error: %s\n" % str(overall_error))
         f.write("Events not detected: %s\n" % str(events_not_detected))
+        f.write("All errors are in percentage\n")
     f.close()
 
 
-    write_video(frames, 'tennis_'+str(vid)+'_Output.mp4', fps)
+    write_video(frames, './video'+str(vid)+'/tennis_'+str(vid)+'_Output.mp4', fps)

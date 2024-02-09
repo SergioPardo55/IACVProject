@@ -1,0 +1,10 @@
+The ball bounces in player's 1 field on frame 17 or at 0.5666666666666667 seconds
+Player 1 hits the ball on frame 27 or at 0.9 seconds
+The ball bounces in player's 2 field on frame 50 or at 1.6666666666666667 seconds
+Player 2 hits the ball on frame 61 or at 2.033333333333333 seconds
+The ball bounces in player's 1 field on frame 85 or at 2.8333333333333335 seconds
+Player 1 hits the ball on frame 97 or at 3.2333333333333334 seconds
+The ball bounces in player's 2 field on frame 121 or at 4.033333333333333 seconds
+Player 2 hits the ball on frame 132 or at 4.4 seconds
+The ball bounces in player's 1 field on frame 160 or at 5.333333333333333 seconds
+Player 1 hits the ball on frame 169 or at 5.633333333333334 seconds

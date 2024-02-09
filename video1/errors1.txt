@@ -1,0 +1,12 @@
+Errors for video 1
+Error for player's 1 hits: 0.7489177489177483
+Player's 1 hits not detected: 0
+Error for player's 2 hits: 0.8958130477117816
+Player's 2 hits not detected: 0
+Error for bounces in player's 1 side of the court: 0.27548209366390924
+Bounces not detected in player's 1 side: 3
+Error for bounces in player's 2 side of the court: 0.3475368469346787
+Bounces not detected in player's 2 side: 1
+Averaged error: 0.5669374343070295
+Events not detected: 4
+All errors are in percentage
