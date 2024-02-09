@@ -402,7 +402,7 @@ if __name__ == '__main__':
         bounce_player_2_truth = [87, 162, 235, 307, 371]
         bounce_player_1_truth = [49, 121, 200, 271, 338, 382]
     elif vid == 2:
-        player_1_crits_truth = [38,105, 173, 245, 231, 392, 464, ]
+        player_1_crits_truth = [38,105, 173, 245, 231, 392, 464]
         bounce_player_2_truth = [61, 133, 20, 275, 346, 419, 492, 563]
         player_2_crits_truth = [12,71, 139, 201, 283, 355, 427, 498, 570]
         bounce_player_1_truth = [25,95, 166, 236, 308, 378, 455,528]
