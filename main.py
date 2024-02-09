@@ -402,25 +402,25 @@ if __name__ == '__main__':
         bounce_player_2_truth = [87, 162, 235, 307, 371]
         bounce_player_1_truth = [49, 121, 200, 271, 338, 382]
     elif vid == 2:
-        player_1_crits_truth = []
-        player_2_crits_truth = []
-        bounce_player_2_truth = []
-        bounce_player_1_truth = []
+        player_1_crits_truth = [38,105, 173, 245, 231, 392, 464, ]
+        bounce_player_2_truth = [61, 133, 20, 275, 346, 419, 492, 563]
+        player_2_crits_truth = [12,71, 139, 201, 283, 355, 427, 498, 570]
+        bounce_player_1_truth = [25,95, 166, 236, 308, 378, 455,528]
     elif vid == 3:
         player_1_crits_truth = []
-        player_2_crits_truth = []
         bounce_player_2_truth = []
+        player_2_crits_truth = []
         bounce_player_1_truth = []
     elif vid == 4:
-        player_1_crits_truth = []
-        player_2_crits_truth = []
-        bounce_player_2_truth = []
-        bounce_player_1_truth = []
+        player_1_crits_truth = [46, 101, 163, 225, 295, 356, 417, 475, 539, 607, 665, 729, 797, 867, 927, 988, 1051, 1109, 1169]
+        bounce_player_2_truth = [58, 122, 184, 246, 313,379, 435, 497, 563, 623, 684, 751, 829,887, 948, 1013, 1070, 1129, 1191]
+        player_2_crits_truth = [69, 133, 193, 258, 327,386, 445, 506, 569, 635, 694, 759, 837, 897, 957, 1021,1079, 1138]
+        bounce_player_1_truth = [95, 150, 213, 284, 348, 405, 466, 530, 595, 655, 722, 781, 857, 919, 979,1041,1102, 1162]
     elif vid == 5:
-        player_1_crits_truth = []
-        player_2_crits_truth = []
-        bounce_player_2_truth = []
-        bounce_player_1_truth = []
+        player_1_crits_truth = [27, 97, 169]
+        bounce_player_2_truth = [50, 121]
+        player_2_crits_truth = [61, 132]
+        bounce_player_1_truth = [17, 85, 160]
 
     # Write errors and ground truths to a file
     all_truths = player_1_crits_truth + player_2_crits_truth + bounce_player_2_truth + bounce_player_1_truth
